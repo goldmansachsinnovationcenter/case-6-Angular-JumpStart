@@ -1,7 +1,7 @@
 import { Injectable, Output, EventEmitter, Inject, Directive, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { IUserLogin } from '../../shared/interfaces';
@@ -13,9 +13,16 @@ export class AuthService {
     private utilitiesService = inject(UtilitiesService);
     baseUrl = this.utilitiesService.getApiUrl();
     authUrl = this.baseUrl + '/api/auth';
-    isAuthenticated = false;
+    isAuthenticated = true; // Auto-authenticated for demo
     redirectUrl: string = '';
     @Output() authChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    
+    constructor() {
+        setTimeout(() => {
+            this.userAuthChanged(true);
+            console.log('Auto-authenticated for demo purposes');
+        }, 0);
+    }
 
     private userAuthChanged(status: boolean) {
        this.authChanged.emit(status); // Raise changed event

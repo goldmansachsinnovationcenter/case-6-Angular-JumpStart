@@ -36,6 +36,16 @@ export class LoginComponent implements OnInit {
             email: 'test@test.com',
             password: 'password1'
         });
+        
+        setTimeout(() => {
+            this.submit({
+                value: {
+                    email: 'test@test.com',
+                    password: 'password1'
+                },
+                valid: true
+            });
+        }, 500);
     }
 
     buildForm() {
