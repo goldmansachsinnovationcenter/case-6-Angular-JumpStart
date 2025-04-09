@@ -1,0 +1,33 @@
+.shell-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.shell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.shell-content {
+  flex: 1;
+  padding: 15px;
+}
+
+.user-info {
+  font-size: 14px;
+}
+
+.user-info a {
+  cursor: pointer;
+  color: #337ab7;
+}
+
+.user-info a:hover {
+  text-decoration: underline;
+  color: #23527c;
+}
