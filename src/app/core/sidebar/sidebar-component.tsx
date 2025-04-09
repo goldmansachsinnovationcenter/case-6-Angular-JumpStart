@@ -23,7 +23,9 @@ export const SidebarComponent: React.FC<SidebarComponentProps> = ({ onItemSelect
 
   const handleItemClick = (path: string) => {
     setActiveItem(path);
-    router.navigate([path]);
+    if (router) {
+      router.navigate([path]);
+    }
     if (onItemSelected) {
       onItemSelected(path);
     }

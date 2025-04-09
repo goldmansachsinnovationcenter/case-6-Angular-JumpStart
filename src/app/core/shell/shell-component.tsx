@@ -8,14 +8,28 @@ interface ShellComponentProps {
 export const ShellComponent: React.FC<ShellComponentProps> = ({ children }) => {
   const { authService, router } = useAngularServices();
 
+  const handleLogout = () => {
+    if (authService) {
+      authService.logout().subscribe();
+    }
+  };
+
+  const navigateToLogin = () => {
+    if (router) {
+      router.navigate(['/login']);
+    }
+  };
+
+  const isAuthenticated = authService?.isAuthenticated || false;
+
   return (
     <div className="shell-container">
       <div className="shell-header">
         <h2>Application Shell</h2>
         <div className="user-info">
-          {authService.isAuthenticated ? 
-            <span>Logged In | <a onClick={() => authService.logout().subscribe()}>Logout</a></span> : 
-            <span><a onClick={() => router.navigate(['/login'])}>Login</a></span>
+          {isAuthenticated ? 
+            <span>Logged In | <a onClick={handleLogout}>Logout</a></span> : 
+            <span><a onClick={navigateToLogin}>Login</a></span>
           }
         </div>
       </div>

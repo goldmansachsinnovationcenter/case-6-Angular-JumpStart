@@ -18,10 +18,8 @@ export class AuthService {
     @Output() authChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
     
     constructor() {
-        setTimeout(() => {
-            this.userAuthChanged(true);
-            console.log('Auto-authenticated for demo purposes');
-        }, 0);
+        this.userAuthChanged(true);
+        console.log('Auto-authenticated for demo purposes');
     }
 
     private userAuthChanged(status: boolean) {
