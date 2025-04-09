@@ -31,6 +31,11 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.buildForm();
+        
+        this.loginForm.patchValue({
+            email: 'test@test.com',
+            password: 'password1'
+        });
     }
 
     buildForm() {
