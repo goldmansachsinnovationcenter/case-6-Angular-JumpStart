@@ -8,35 +8,12 @@ import FilterTextbox from '../shared/FilterTextbox';
 import CustomersCard from './CustomersCard';
 import CustomersGrid from './CustomersGrid';
 import Pagination from '../shared/Pagination';
+import { Container } from '../../shared-components/Layout';
 
 const Map = lazy(() => import('../shared/Map'));
 
 const CustomersView = styled.div`
   padding: 20px;
-`;
-
-const Container = styled.div`
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-  
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-  
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-  
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
 `;
 
 const Header = styled.header`
