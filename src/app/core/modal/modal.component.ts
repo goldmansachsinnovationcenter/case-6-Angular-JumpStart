@@ -1,60 +1,47 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
-
-import { ModalService, IModalContent } from './modal.service';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NgClass, NgStyle, NgIf } from '@angular/common';
+import { ReactWrapperService } from '../../shared/react/react-wrapper.service';
+import { ModalService } from './modal.service';
+import * as React from 'react';
 
 @Component({
     selector: 'cm-modal',
-    templateUrl: './modal.component.html',
+    template: '<div #reactModalContainer></div>',
     styleUrls: ['./modal.component.css'],
     standalone: true,
     imports: [NgClass, NgStyle, NgIf]
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnDestroy {
+  @ViewChild('reactModalContainer', { static: true }) containerRef!: ElementRef;
 
-  modalVisible = false;
-  modalVisibleAnimate = false;
-  modalContent: IModalContent = {};
-  cancel: () => void = () => {};
-  ok: () => void = () => {};
-  defaultModalContent: IModalContent = {
-    header: 'Please Confirm',
-    body: 'Are you sure you want to continue?',
-    cancelButtonText: 'Cancel',
-    OKButtonText: 'OK',
-    cancelButtonVisible: true
-  };
-
-  constructor(private modalService: ModalService) {
-    modalService.show = this.show.bind(this);
-    modalService.hide = this.hide.bind(this);
-  }
+  constructor(
+    private modalService: ModalService,
+    private reactWrapper: ReactWrapperService
+  ) { }
 
   ngOnInit() {
-
+    this.renderReactComponent();
   }
 
-  show(modalContent: IModalContent) {
-    this.modalContent = Object.assign(this.defaultModalContent, modalContent);
-    this.modalVisible = true;
-    setTimeout(() => this.modalVisibleAnimate = true);
+  ngOnDestroy() {
+    this.reactWrapper.unmountReact(this.containerRef);
+  }
 
-    const promise = new Promise<boolean>((resolve, reject) => {
-      this.cancel = () => {
-        this.hide();
-        resolve(false);
-      };
-      this.ok = () => {
-        this.hide();
-        resolve(true);
-      };
+  private renderReactComponent(): void {
+    import('./modal-component').then(({ ModalComponent: ReactModalComponent }) => {
+      import('../../shared/react/angular-services-context').then(({ AngularServicesProvider }) => {
+        const services = {
+          modalService: this.modalService
+        };
+
+        const reactElement = React.createElement(
+          AngularServicesProvider as any, 
+          { services } as any,
+          React.createElement(ReactModalComponent as any)
+        );
+
+        this.reactWrapper.renderReact(this.containerRef, reactElement as any);
+      });
     });
-    return promise;
   }
-
-  hide() {
-    this.modalVisibleAnimate = false;
-    setTimeout(() => this.modalVisible = false, 300);
-  }
-
 }
