@@ -9,6 +9,10 @@
     "build": "ng build angular-jumpstart",
     "cypress": "concurrently \"npm start\" \"npx cypress open\"",
     "cypress:headless": "concurrently \"npm start\" \"npx cypress run\"",
+    "test-e2e": "concurrently \"npm start\" \"npx cypress run --config-file ./test-e2e/cypress.config.ts\"",
+    "test-e2e:open": "concurrently \"npm start\" \"npx cypress open --config-file ./test-e2e/cypress.config.ts\"",
+    "test-vrt": "concurrently \"npm start\" \"npx playwright test --config=test-vrt/playwright.config.ts\"",
+    "test-vrt:update": "concurrently \"npm start\" \"npx playwright test --config=test-vrt/playwright.config.ts --update-snapshots\"",
     "playground": "angular-playground",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "npm run docs:json && start-storybook -p 6006",
@@ -33,6 +37,7 @@
     "@angular-devkit/build-angular": "^18.2.12",
     "@angular/cli": "^18.2.12",
     "@angular/compiler-cli": "^18.2.0",
+    "@playwright/test": "^1.51.1",
     "@types/google.maps": "^3.58.1",
     "open": "^10.1.0",
     "typescript": "~5.5.2"

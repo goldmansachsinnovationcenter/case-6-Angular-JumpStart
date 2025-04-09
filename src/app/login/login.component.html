@@ -11,7 +11,7 @@
                         Email:
                     </div>
                     <div class="col-md-10">
-                        <input title="email" type="email" name="email" class="form-control" formControlName="email" />
+                        <input title="email" type="email" name="email" class="form-control" formControlName="email" data-testid="email-input" />
                         <div class="alert alert-danger" data-cy="email-error" [hidden]="f['email'].untouched || f['email'].valid">
                             A valid email address is required
                         </div>
@@ -23,7 +23,7 @@
                         Password:
                     </div>
                     <div class="col-md-10">
-                        <input title="password" type="password" name="password" class="form-control" formControlName="password" />
+                        <input title="password" type="password" name="password" class="form-control" formControlName="password" data-testid="password-input" />
                         <div class="alert alert-danger" data-cy="password-error" [hidden]="f['password'].untouched || f['password'].valid">
                             Password is required (6 or more characters with at least one number)
                         </div>
@@ -32,7 +32,7 @@
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-success" [disabled]="!loginForm.valid">Login</button>
+                        <button type="submit" class="btn btn-success" [disabled]="!loginForm.valid" data-testid="login-button">Login</button>
                     </div>
                 </div>
                 <br />

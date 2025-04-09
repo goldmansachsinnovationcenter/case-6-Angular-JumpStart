@@ -1,5 +1,5 @@
 <nav [hidden]="!isVisible">
-  <ul class="pagination">
+  <ul class="pagination" data-testid="pagination">
     <li [class.disabled]="!previousEnabled" (click)="previousNext(-1, $event)">
       <a aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
