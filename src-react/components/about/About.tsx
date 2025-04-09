@@ -1,69 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ViewContainer = styled.div`
-  padding: 20px;
-`;
-
-const Container = styled.div`
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-  
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-  
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-  
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
-`;
-
-const Header = styled.header`
-  margin-bottom: 1rem;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px;
-  margin-bottom: 1rem;
-`;
-
-const ColMd2 = styled.div`
-  position: relative;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  
-  @media (min-width: 768px) {
-    flex: 0 0 16.666667%;
-    max-width: 16.666667%;
-  }
-`;
-
-const ColMd10 = styled.div`
-  position: relative;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  
-  @media (min-width: 768px) {
-    flex: 0 0 83.333333%;
-    max-width: 83.333333%;
-  }
-`;
+import { 
+  ViewContainer, 
+  Container, 
+  Header, 
+  Row, 
+  ColMd2, 
+  ColMd10 
+} from '../../shared-components/Layout';
 
 const InfoIcon = styled.span`
   margin-right: 8px;

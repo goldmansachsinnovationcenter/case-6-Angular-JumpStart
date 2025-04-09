@@ -5,97 +5,24 @@ import { useQuery } from '@tanstack/react-query';
 
 import { ICustomer } from '../../interfaces';
 import Map from '../shared/Map';
-
-const Container = styled.div`
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-  
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-  
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-  
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px;
-`;
-
-const ColMd2 = styled.div`
-  position: relative;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  
-  @media (min-width: 768px) {
-    flex: 0 0 16.666667%;
-    max-width: 16.666667%;
-  }
-`;
-
-const ColMd10 = styled.div`
-  position: relative;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  
-  @media (min-width: 768px) {
-    flex: 0 0 83.333333%;
-    max-width: 83.333333%;
-  }
-`;
-
-const ColMd12 = styled.div`
-  position: relative;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  
-  @media (min-width: 768px) {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-`;
+import { 
+  Container, 
+  Row, 
+  ColMd2, 
+  ColMd10, 
+  ColMd12 
+} from '../../shared-components/Layout';
+import { CustomerName, NoCustomer } from '../../shared-components/Typography';
+import { capitalize } from '../../shared-components/Utils';
 
 const DetailsImage = styled.img`
   max-width: 100%;
   height: auto;
 `;
 
-const CustomerName = styled.h4`
-  margin-bottom: 1rem;
-`;
-
 const MapContainer = styled.div`
   margin-top: 20px;
 `;
-
-const NoCustomer = styled.div`
-  padding: 20px;
-  text-align: center;
-  font-style: italic;
-`;
-
-const capitalize = (str: string): string => {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-};
 
 const CustomerDetails: React.FC = () => {
   const { id } = useParams({ from: '/customers/$id/details' });

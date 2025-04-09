@@ -4,115 +4,17 @@ import { useQuery } from '@tanstack/react-query';
 
 import { ICustomer, IPagedResults } from '../../interfaces';
 import Pagination from '../shared/Pagination';
-
-const CustomersView = styled.div`
-  padding: 20px;
-`;
-
-const Container = styled.div`
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-  
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-  
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-  
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
-`;
-
-const Header = styled.header`
-  margin-bottom: 20px;
-`;
-
-const Title = styled.h3`
-  margin-bottom: 0;
-  font-weight: 500;
-  line-height: 1.2;
-`;
-
-const Icon = styled.span`
-  margin-right: 10px;
-`;
+import { ViewContainer, Container, Header } from '../../shared-components/Layout';
+import { Title, CustomerName, NoOrders, NoCustomers } from '../../shared-components/Typography';
+import { OrdersTable } from '../../shared-components/Tables';
+import { Icon } from '../../shared-components/Icons';
+import { capitalize, formatCurrency } from '../../shared-components/Utils';
 
 const CustomerRow = styled.div`
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
 `;
-
-const CustomerName = styled.h4`
-  margin-bottom: 10px;
-  font-weight: 500;
-  line-height: 1.2;
-`;
-
-const OrdersTable = styled.table`
-  width: 100%;
-  margin-bottom: 1rem;
-  color: #212529;
-  border-collapse: collapse;
-  
-  tr {
-    &:nth-of-type(odd) {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.075);
-    }
-  }
-  
-  td {
-    padding: 0.75rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-  }
-  
-  .text-right {
-    text-align: right;
-  }
-  
-  .summary-border {
-    border-top: 2px solid #dee2e6;
-    font-weight: bold;
-  }
-`;
-
-const NoOrders = styled.div`
-  padding: 10px;
-  font-style: italic;
-`;
-
-const NoCustomers = styled.div`
-  padding: 20px;
-  text-align: center;
-  font-style: italic;
-`;
-
-const capitalize = (str: string): string => {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-};
-
-const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(value);
-};
 
 const Orders: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,7 +47,7 @@ const Orders: React.FC = () => {
   }
   
   return (
-    <CustomersView className="customers view indent">
+    <ViewContainer className="customers view indent">
       <Container>
         <Header>
           <Title>
@@ -199,7 +101,7 @@ const Orders: React.FC = () => {
           )}
         </Container>
       </Container>
-    </CustomersView>
+    </ViewContainer>
   );
 };
 

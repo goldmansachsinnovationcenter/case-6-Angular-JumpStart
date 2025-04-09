@@ -4,6 +4,8 @@ import { Link, useNavigate } from '@tanstack/react-router';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useGrowlerService, GrowlerMessageType } from './Growler';
+import { Container } from '../../shared-components/Layout';
+import { NavButton } from '../../shared-components/Buttons';
 
 const NavbarContainer = styled.nav`
   position: fixed;
@@ -15,30 +17,6 @@ const NavbarContainer = styled.nav`
   border-color: #e7e7e7;
   border-width: 0 0 1px;
   border-style: solid;
-`;
-
-const Container = styled.div`
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-  
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-  
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-  
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
 `;
 
 const NavbarHeader = styled.div`
@@ -177,20 +155,6 @@ const NavLink = styled(Link)`
   &.active {
     color: #555;
     background-color: #e7e7e7;
-  }
-`;
-
-const NavButton = styled.a`
-  display: block;
-  padding: 10px 15px;
-  text-decoration: none;
-  color: #777;
-  cursor: pointer;
-  
-  &:hover, &:focus {
-    text-decoration: none;
-    color: #333;
-    background-color: transparent;
   }
 `;
 
