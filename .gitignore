@@ -26,3 +26,4 @@ cypress/screenshots/
 
 playwright-report/
 test-vrt/test-results/
+test-results/
