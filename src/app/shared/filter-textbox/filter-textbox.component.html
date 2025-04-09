@@ -1,6 +1,7 @@
-<form>
+<form data-testid="customer-filter">
         Filter:
         <input type="text" name="filter"
             [(ngModel)]="model.filter" 
-            (keyup)="filterChanged($event)"  />
+            (keyup)="filterChanged($event)" 
+            data-testid="filter-input" />
 </form>

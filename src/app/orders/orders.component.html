@@ -16,11 +16,11 @@
                     <table *ngIf="customer.orders && customer.orders.length" class="table table-striped table-hover orders-table">
                         <tr *ngFor="let order of customer.orders;trackBy:trackbyService.order">
                             <td>{{order.productName}}</td>
-                            <td class="text-right">{{ order.itemCost | currency:'USD':'symbol' }}</td>    
+                            <td class="text-right" data-testid="order-cost">{{ order.itemCost | currency:'USD':'symbol' }}</td>    
                         </tr>
                         <tr class="summary-border">
                             <td>&nbsp;</td>
-                            <td class="text-right">{{ customer.orderTotal | currency:'USD':'symbol' }}
+                            <td class="text-right" data-testid="order-total">{{ customer.orderTotal | currency:'USD':'symbol' }}
                         </tr>
                     </table>
                     <div *ngIf="!customer.orders || !customer.orders.length">
@@ -31,7 +31,8 @@
                 <cm-pagination [hidden]="!customers || !customers.length"
                     [totalItems]="totalRecords" 
                     [pageSize]="pageSize" 
-                    (pageChanged)="pageChanged($event)"></cm-pagination>
+                    (pageChanged)="pageChanged($event)"
+                    data-testid="pagination"></cm-pagination>
 
             </div>
             <div *ngIf="!customers || !customers.length">

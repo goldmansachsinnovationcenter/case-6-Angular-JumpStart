@@ -12,17 +12,17 @@
                 <div class="navbar">
                     <ul class="nav navbar-nav">
                         <li class="toolbar-item">
-                            <a (click)="changeDisplayMode(displayModeEnum.Card)" [class.active]="displayMode === displayModeEnum.Card">
+                            <a (click)="changeDisplayMode(displayModeEnum.Card)" [class.active]="displayMode === displayModeEnum.Card" data-testid="view-card">
                                 <span class="glyphicon glyphicon-th-large"></span> Card View
                             </a>
                         </li>
                         <li class="toolbar-item">
-                            <a (click)="changeDisplayMode(displayModeEnum.Grid)" [class.active]="displayMode === displayModeEnum.Grid">
+                            <a (click)="changeDisplayMode(displayModeEnum.Grid)" [class.active]="displayMode === displayModeEnum.Grid" data-testid="view-grid">
                                 <span class="glyphicon glyphicon-align-justify"></span> List View
                             </a>
                         </li>
                         <li class="toolbar-item">
-                            <a (click)="lazyLoadMapComponent()" [class.active]="displayMode === displayModeEnum.Map">
+                            <a (click)="lazyLoadMapComponent()" [class.active]="displayMode === displayModeEnum.Map" data-testid="view-map">
                                 <span class="glyphicon glyphicon-map-marker"></span> Map View
                             </a>
                         </li>
