@@ -22,5 +22,9 @@ src/app/dist
 cypress/videos/
 cypress/screenshots/
 
+# Playwright
+playwright-report/
+test-results/
+
 
 
