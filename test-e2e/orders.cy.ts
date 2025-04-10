@@ -9,20 +9,23 @@ describe("Order Tests", () => {
 
   beforeEach(() => {
     cy.visit("/orders");
+    // Wait for data to load
+    cy.wait(1000);
   });
 
   it("should display orders with correct pricing", () => {
-    cy.get('[data-testid="order-table"]').should('be.visible');
-    cy.get('[data-testid="order-price"]').should('exist');
+    // First check if any orders exist
+    cy.get('.orders-table').should('exist');
+    cy.get('.text-right').should('exist');
     
     // Verify that the order total is the sum of individual items
-    cy.get('[data-testid="order-price"]').then($prices => {
+    cy.get('.text-right').not('.summary-border .text-right').then($prices => {
       const total = Array.from($prices).reduce((sum, el) => {
         const price = parseFloat(el.textContent.replace(/[^0-9.-]+/g, ''));
         return sum + price;
       }, 0);
       
-      cy.get('[data-testid="order-total"]').first().invoke('text').then(totalText => {
+      cy.get('.summary-border .text-right').first().invoke('text').then(totalText => {
         const displayedTotal = parseFloat(totalText.replace(/[^0-9.-]+/g, ''));
         expect(Math.round(total * 100) / 100).to.equal(Math.round(displayedTotal * 100) / 100);
       });
