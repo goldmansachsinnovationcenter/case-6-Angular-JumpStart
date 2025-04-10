@@ -62,9 +62,10 @@ const OrdersGrid: React.FC<OrdersGridProps> = ({ orders }) => {
     return <EmptyMessage>No orders found.</EmptyMessage>;
   }
   
-  const totalPrice = orders.reduce((sum, order) => {
-    return Math.round((sum + order.itemCost) * 100) / 100;
-  }, 0);
+  let totalPrice = 0;
+  orders.forEach(order => {
+    totalPrice = Math.round((totalPrice + order.itemCost) * 100) / 100;
+  });
   
   return (
     <OrdersTable className="orders-table" data-testid="orders-grid">
