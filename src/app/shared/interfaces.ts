@@ -27,8 +27,17 @@ export interface IState {
 }
 
 export interface IOrder {
+    id: number;
     productName: string;
     itemCost: number;
+    quantity: number;
+    orderDate: string;
+    shipped: boolean;
+    customerFirstName: string;
+    customerLastName: string;
+    customerAddress: string;
+    customerCity: string;
+    customerState: string;
 }
 
 export interface IOrderItem {
