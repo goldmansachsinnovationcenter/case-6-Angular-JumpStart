@@ -10,10 +10,12 @@ export class UtilitiesService {
             return import.meta.env.NG_APP_API_URL;
         }
         
-        const hostname = this.window.location.hostname.includes('@') 
-            ? this.window.location.hostname.split('@')[1] 
-            : this.window.location.hostname;
-            
+        if (this.window.location.hostname.includes('@') || 
+            this.window.location.hostname.includes('devinapps.com')) {
+            return '';
+        }
+        
+        const hostname = this.window.location.hostname;
         return `${this.window.location.protocol}//${hostname}${port}`;
     }
 

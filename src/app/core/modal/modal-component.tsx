@@ -57,15 +57,14 @@ export const ModalComponent: React.FC<ModalComponentProps> = ({ onCancel, onOk }
     setTimeout(() => setModalVisible(false), 300);
   };
 
+  const angularServices = useAngularServices();
+  
   useEffect(() => {
-    const angularServices = useAngularServices();
-    
     if (angularServices.modalService) {
       angularServices.modalService.show = show;
       angularServices.modalService.hide = hide;
     }
-    
-  }, []);
+  }, [angularServices.modalService]);
 
   return (
     <div 
