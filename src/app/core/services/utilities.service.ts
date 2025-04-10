@@ -9,7 +9,12 @@ export class UtilitiesService {
         if (import.meta.env.NG_APP_API_URL) {
             return import.meta.env.NG_APP_API_URL;
         }
-        return `${this.window.location.protocol}//${this.window.location.hostname}${port}`;
+        
+        const hostname = this.window.location.hostname.includes('@') 
+            ? this.window.location.hostname.split('@')[1] 
+            : this.window.location.hostname;
+            
+        return `${this.window.location.protocol}//${hostname}${port}`;
     }
 
     private getPort() {
