@@ -7,7 +7,6 @@ const OrdersTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  class-name: orders-table;
 `;
 
 const TableHeader = styled.th`
@@ -31,7 +30,6 @@ const TableRow = styled.tr`
 const SummaryRow = styled.tr`
   font-weight: bold;
   background-color: #f2f2f2;
-  class-name: summary-border;
 `;
 
 const TableCell = styled.td`
@@ -41,7 +39,6 @@ const TableCell = styled.td`
 
 const PriceCell = styled(TableCell)`
   text-align: right;
-  class-name: text-right;
 `;
 
 const EmptyMessage = styled.div`
@@ -65,7 +62,9 @@ const OrdersGrid: React.FC<OrdersGridProps> = ({ orders }) => {
     return <EmptyMessage>No orders found.</EmptyMessage>;
   }
   
-  const totalPrice = orders.reduce((sum, order) => sum + order.itemCost, 0);
+  const totalPrice = orders.reduce((sum, order) => {
+    return Math.round((sum + order.itemCost) * 100) / 100;
+  }, 0);
   
   return (
     <OrdersTable className="orders-table" data-testid="orders-grid">

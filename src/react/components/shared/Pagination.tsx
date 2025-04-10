@@ -13,6 +13,8 @@ const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  position: relative;
+  z-index: 10;
 `;
 
 const PaginationList = styled.ul`
@@ -21,11 +23,14 @@ const PaginationList = styled.ul`
   padding: 0;
   margin: 0;
   border-radius: 4px;
-  class-name: pagination;
+  position: relative;
+  z-index: 20;
 `;
 
 const PageItem = styled.li<{ active?: boolean }>`
   margin: 0 2px;
+  position: relative;
+  z-index: 30;
 `;
 
 const PageLink = styled.button<{ active?: boolean }>`
@@ -35,6 +40,8 @@ const PageLink = styled.button<{ active?: boolean }>`
   color: ${props => props.active ? 'white' : '#007bff'};
   cursor: pointer;
   border-radius: 4px;
+  position: relative;
+  z-index: 40;
   
   &:hover {
     background-color: ${props => props.active ? '#007bff' : '#f8f9fa'};
@@ -106,6 +113,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <PageLink
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
+            data-testid="pagination-prev"
           >
             &laquo;
           </PageLink>
@@ -119,6 +127,7 @@ const Pagination: React.FC<PaginationProps> = ({
               <PageLink
                 active={page === currentPage}
                 onClick={() => handlePageChange(page)}
+                data-testid={`pagination-page-${page}`}
               >
                 {page}
               </PageLink>
@@ -130,6 +139,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <PageLink
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
+            data-testid="pagination-next"
           >
             &raquo;
           </PageLink>
