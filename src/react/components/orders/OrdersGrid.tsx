@@ -63,7 +63,7 @@ const OrdersGrid: React.FC<OrdersGridProps> = ({ orders }) => {
   }
   
   const totalPrice = orders.reduce((sum, order) => {
-    return Math.round((sum + order.itemCost) * 100) / 100;
+    return parseFloat((sum + order.itemCost).toFixed(2));
   }, 0);
   
   return (

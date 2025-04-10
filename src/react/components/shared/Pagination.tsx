@@ -14,7 +14,7 @@ const PaginationContainer = styled.div`
   justify-content: center;
   margin-top: 20px;
   position: relative;
-  z-index: 10;
+  z-index: 100;
 `;
 
 const PaginationList = styled.ul`
@@ -24,13 +24,15 @@ const PaginationList = styled.ul`
   margin: 0;
   border-radius: 4px;
   position: relative;
-  z-index: 20;
+  z-index: 100;
+  background: white;
 `;
 
 const PageItem = styled.li<{ active?: boolean }>`
   margin: 0 2px;
   position: relative;
-  z-index: 30;
+  z-index: 100;
+  pointer-events: auto;
 `;
 
 const PageLink = styled.button<{ active?: boolean }>`
@@ -41,7 +43,8 @@ const PageLink = styled.button<{ active?: boolean }>`
   cursor: pointer;
   border-radius: 4px;
   position: relative;
-  z-index: 40;
+  z-index: 100;
+  pointer-events: auto;
   
   &:hover {
     background-color: ${props => props.active ? '#007bff' : '#f8f9fa'};
