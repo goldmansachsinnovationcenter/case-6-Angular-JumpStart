@@ -26,18 +26,21 @@ describe("Order Tests", () => {
         return;
       }
       
-      // Calculate total from individual prices
-      const total = Array.from($prices).reduce((sum, el) => {
+      let total = 0;
+      Array.from($prices).forEach(el => {
         const price = parseFloat(el.textContent.replace(/[^0-9.-]+/g, ''));
-        return sum + (isNaN(price) ? 0 : price);
-      }, 0);
+        if (!isNaN(price)) {
+          total = Math.round((total + price) * 100) / 100;
+        }
+      });
       
       // Get the displayed total
       cy.get('table.orders-table tr.summary-border td.text-right').first().invoke('text').then(totalText => {
         const displayedTotal = parseFloat(totalText.replace(/[^0-9.-]+/g, ''));
         if (!isNaN(displayedTotal)) {
-          // Compare with a small tolerance for floating point errors
-          expect(Math.abs(total - displayedTotal)).to.be.lessThan(0.01);
+          const roundedTotal = Math.round(total * 100) / 100;
+          const roundedDisplayed = Math.round(displayedTotal * 100) / 100;
+          expect(roundedTotal).to.equal(roundedDisplayed);
         }
       });
     });
