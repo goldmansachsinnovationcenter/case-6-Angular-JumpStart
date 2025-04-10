@@ -25,6 +25,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // CORS middleware
+// Import auth middleware
+import authMiddleware from "./auth-middleware.js";
+
+// Apply auth middleware
+app.use(authMiddleware);
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', true);
