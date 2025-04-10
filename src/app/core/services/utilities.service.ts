@@ -12,7 +12,7 @@ export class UtilitiesService {
         
         if (this.window.location.hostname.includes('@') || 
             this.window.location.hostname.includes('devinapps.com')) {
-            return '';
+            return this.window.location.origin;
         }
         
         const hostname = this.window.location.hostname;
