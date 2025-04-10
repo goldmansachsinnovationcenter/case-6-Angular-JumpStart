@@ -13,7 +13,7 @@
                 <div class="row" *ngFor="let customer of customers;trackBy:trackbyService.customer">
                     <h4>{{ customer.firstName | capitalize }} {{ customer.lastName | capitalize }}</h4>
                     <br />
-                    <table *ngIf="customer.orders <table *ngIf="customer.orders && customer.orders.length" class="table table-striped table-hover orders-table"><table *ngIf="customer.orders && customer.orders.length" class="table table-striped table-hover orders-table"> customer.orders.length" class="table table-striped table-hover orders-table" data-testid="order-table">
+                    <table *ngIf="customer.orders && customer.orders.length" class="table table-striped table-hover orders-table" data-testid="order-table">
                         <tr *ngFor="let order of customer.orders;trackBy:trackbyService.order">
                             <td>{{order.productName}}</td>
                             <td class="text-right" data-testid="order-price">{{ order.itemCost | currency:'USD':'symbol' }}</td>    
