@@ -14,24 +14,24 @@ const PaginationContainer = styled.div`
   justify-content: center;
   margin-top: 20px;
   position: relative;
-  z-index: 100;
+  z-index: 1000;
 `;
 
-const PaginationList = styled.ul`
+const PaginationList = styled.ul.attrs({ className: 'pagination' })`
   display: flex;
   list-style-type: none;
   padding: 0;
   margin: 0;
   border-radius: 4px;
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   background: white;
 `;
 
 const PageItem = styled.li<{ active?: boolean }>`
   margin: 0 2px;
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   pointer-events: auto;
 `;
 
@@ -43,7 +43,7 @@ const PageLink = styled.button<{ active?: boolean }>`
   cursor: pointer;
   border-radius: 4px;
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   pointer-events: auto;
   
   &:hover {
