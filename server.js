@@ -28,9 +28,6 @@ app.use(express.json());
 // Import auth middleware
 import authMiddleware from "./auth-middleware.js";
 
-// Apply auth middleware
-app.use(authMiddleware);
-
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', true);
@@ -39,8 +36,15 @@ app.use((req, res, next) => {
     'Origin, Authorization, X-Requested-With, X-XSRF-TOKEN, X-InlineCount, Content-Type, Accept'
   );
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   next();
 });
+
+app.use(authMiddleware);
 
 // Serve static files if not running in a container
 if (!inContainer) {
