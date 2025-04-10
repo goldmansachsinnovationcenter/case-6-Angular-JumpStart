@@ -1,8 +1,10 @@
-# Angular JumpStart with TypeScript
+# Angular JumpStart with TypeScript and React Integration
 
 The goal of this jumpstart app is to provide
 a simple way to get started with Angular 2+ while also showing several key Angular features. The sample
 relies on the Angular CLI to build the application.
+
+This project now includes React integration, demonstrating how to gradually migrate from Angular to React while maintaining full functionality and a consistent user experience.
 
 Looking for expert onsite Angular/TypeScript training? We've trained the biggest (and smallest :-)) companies around the world for over 15 years. For more information visit https://codewithdan.com.
 
@@ -21,6 +23,130 @@ Looking for expert onsite Angular/TypeScript training? We've trained the biggest
 * Using template-driven and reactive forms functionality for capturing and validating data
 * Optional: Webpack functionality is available for module loading and more (see below for details)
 * Optional: Ahead-of-Time (AOT) functionality is available for a production build of the project (see below for details)
+
+## React Integration Architecture
+
+This project demonstrates how to integrate React into an existing Angular application, allowing for a gradual migration path. The integration follows these key principles:
+
+* **Coexistence**: Angular and React components run side-by-side in the same application
+* **Incremental Migration**: Components can be migrated one at a time without disrupting the application
+* **Shared Services**: Angular services are made available to React components
+* **Consistent UX**: The user experience remains consistent throughout the migration
+
+### Integration Components
+
+The React integration consists of several key components:
+
+1. **ReactWrapperService**: An Angular service that handles rendering React components within Angular templates
+2. **AngularServicesContext**: A React context provider that makes Angular services available to React components
+3. **Angular Wrapper Components**: Angular components that host React components using ElementRef and ReactDOM
+4. **React Components**: Pure React components that replace Angular functionality
+
+### Core Components Migrated to React
+
+The following core components have been migrated to React:
+
+* **NavbarComponent**: The application header with navigation links and login/logout functionality
+* **ShellComponent**: A container component that wraps the main content area
+* **SidebarComponent**: Navigation sidebar with links to different sections of the application
+
+### Data Flow Between Angular and React
+
+The integration supports bidirectional data flow:
+
+1. **Angular to React**: 
+   - Angular services are passed to React components via the AngularServicesContext
+   - Input properties are passed from Angular wrapper components to React components
+
+2. **React to Angular**:
+   - React components can call methods on Angular services
+   - React components can emit events back to Angular using callback functions
+
+### How to Extend the Integration
+
+To create a new React component within the Angular application:
+
+1. Create a React component file (TSX) in the appropriate directory
+2. Create an Angular wrapper component that uses ReactWrapperService to render the React component
+3. Use the AngularServicesContext to access Angular services from your React component
+4. Import and use the Angular wrapper component in your Angular templates
+
+Example of creating a new React component:
+
+```tsx
+// my-component.tsx
+import React from 'react';
+import { useAngularServices } from '../../shared/react/angular-services-context';
+
+interface MyComponentProps {
+  title: string;
+  onAction?: () => void;
+}
+
+export const MyComponent: React.FC<MyComponentProps> = ({ title, onAction }) => {
+  const { someService } = useAngularServices();
+  
+  return (
+    <div>
+      <h2>{title}</h2>
+      <button onClick={onAction}>Trigger Action</button>
+    </div>
+  );
+};
+```
+
+Example of creating an Angular wrapper:
+
+```typescript
+// my-component.component.ts
+import { Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ReactWrapperService } from '../../shared/react/react-wrapper.service';
+import * as React from 'react';
+
+@Component({
+  selector: 'app-my-component',
+  template: '<div #reactContainer></div>'
+})
+export class MyComponentComponent implements OnInit, OnDestroy {
+  @ViewChild('reactContainer', { static: true }) containerRef!: ElementRef;
+  @Input() title: string = '';
+  @Output() action = new EventEmitter<void>();
+
+  constructor(private reactWrapper: ReactWrapperService) {}
+
+  ngOnInit(): void {
+    this.renderReactComponent();
+  }
+
+  ngOnDestroy(): void {
+    this.reactWrapper.unmountReact(this.containerRef);
+  }
+
+  private handleAction = () => {
+    this.action.emit();
+  }
+
+  private renderReactComponent(): void {
+    import('./my-component').then(({ MyComponent }) => {
+      import('../../shared/react/angular-services-context').then(({ AngularServicesProvider }) => {
+        const services = {
+          someService: this.someService
+        };
+
+        const reactElement = React.createElement(
+          AngularServicesProvider, 
+          { services },
+          React.createElement(MyComponent, {
+            title: this.title,
+            onAction: this.handleAction
+          })
+        );
+
+        this.reactWrapper.renderReact(this.containerRef, reactElement);
+      });
+    });
+  }
+}
 
 ## Running the Application with Node.js
 

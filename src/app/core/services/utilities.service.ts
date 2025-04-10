@@ -9,7 +9,14 @@ export class UtilitiesService {
         if (import.meta.env.NG_APP_API_URL) {
             return import.meta.env.NG_APP_API_URL;
         }
-        return `${this.window.location.protocol}//${this.window.location.hostname}${port}`;
+        
+        if (this.window.location.hostname.includes('@') || 
+            this.window.location.hostname.includes('devinapps.com')) {
+            return this.window.location.origin;
+        }
+        
+        const hostname = this.window.location.hostname;
+        return `${this.window.location.protocol}//${hostname}${port}`;
     }
 
     private getPort() {

@@ -19,6 +19,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
+    "jsx": "react",
     "lib": [
       "ES2022",
       "dom"

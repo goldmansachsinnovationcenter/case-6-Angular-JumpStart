@@ -25,6 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // CORS middleware
+// Import auth middleware
+import authMiddleware from "./auth-middleware.js";
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', true);
@@ -33,8 +36,15 @@ app.use((req, res, next) => {
     'Origin, Authorization, X-Requested-With, X-XSRF-TOKEN, X-InlineCount, Content-Type, Accept'
   );
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   next();
 });
+
+app.use(authMiddleware);
 
 // Serve static files if not running in a container
 if (!inContainer) {
@@ -119,8 +129,8 @@ if (!inContainer) {
 }
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Express server running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Express server running on http://0.0.0.0:${port}`);
 });
 
 // Open the browser (only if not in a container or Azure)

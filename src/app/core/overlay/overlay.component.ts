@@ -1,58 +1,52 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-
-import { EventBusService, Events } from '../services/event-bus.service';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { ReactWrapperService } from '../../shared/react/react-wrapper.service';
+import { EventBusService } from '../services/event-bus.service';
+import * as React from 'react';
 
 @Component({
     selector: 'cm-overlay',
-    templateUrl: './overlay.component.html',
+    template: '<div #reactOverlayContainer><ng-content></ng-content></div>',
     styleUrls: ['./overlay.component.css'],
     standalone: true
 })
 export class OverlayComponent implements OnInit, OnDestroy {
-
-    httpRequestSub: Subscription = {} as Subscription;
-    httpResponseSub: Subscription = {} as Subscription;
-    enabled = false;
-    queue: any[] = [];
-    timerId: number = 0;
-    timerHideId: number = 0;
-
+    @ViewChild('reactOverlayContainer', { static: true }) containerRef!: ElementRef;
     @Input() delay = 500;
 
-    constructor(private eventBus: EventBusService) { }
+    constructor(
+      private eventBus: EventBusService,
+      private reactWrapper: ReactWrapperService
+    ) { }
 
     ngOnInit() {
-        // Handle request
-        this.httpRequestSub = this.eventBus.on(Events.httpRequest, (() => {
-            this.queue.push({});
-            if (this.queue.length === 1) {
-                // Only show if we have an item in the queue after the delay time
-                setTimeout(() => {
-                    if (this.queue.length) { this.enabled = true; }
-                }, this.delay);
-            }
-        }));
-
-        // Handle response
-        this.httpResponseSub = this.eventBus.on(Events.httpResponse, (() => {
-            this.queue.pop();
-            if (this.queue.length === 0) {
-                // Since we don't know if another XHR request will be made, pause before
-                // hiding the overlay. If another XHR request comes in then the overlay
-                // will stay visible which prevents a flicker
-                setTimeout(() => {
-                    // Make sure queue is still 0 since a new XHR request may have come in
-                    // while timer was running
-                    if (this.queue.length === 0) { this.enabled = false; }
-                }, this.delay);
-            }
-        }));
+      const content = this.containerRef.nativeElement.innerHTML;
+      this.containerRef.nativeElement.innerHTML = '';
+      
+      this.renderReactComponent(content);
     }
 
     ngOnDestroy() {
-        this.httpRequestSub.unsubscribe();
-        this.httpResponseSub.unsubscribe();
+      this.reactWrapper.unmountReact(this.containerRef);
     }
 
+    private renderReactComponent(content: string): void {
+      import('./overlay-component').then(({ OverlayComponent: ReactOverlayComponent }) => {
+        import('../../shared/react/angular-services-context').then(({ AngularServicesProvider }) => {
+          const services = {
+            eventBus: this.eventBus
+          };
+
+          const reactElement = React.createElement(
+            AngularServicesProvider as any, 
+            { services } as any,
+            React.createElement(ReactOverlayComponent as any, { 
+              delay: this.delay,
+              dangerouslySetInnerHTML: { __html: content }
+            })
+          );
+
+          this.reactWrapper.renderReact(this.containerRef, reactElement as any);
+        });
+      });
+    }
 }
