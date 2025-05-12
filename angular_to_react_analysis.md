@@ -157,7 +157,18 @@ The analysis of PRs reveals that Devin performs significantly better with increm
 
 ### Integration Architecture
 
-The following diagrams illustrate the technical implementation details of the incremental integration approach (PR #2), focusing on how Angular and React components communicate and integrate.
+The following diagram provides a comprehensive view of the Angular-React integration architecture, showing how the incremental approach combines with the test-first strategy:
+
+![Angular-React Integration Architecture](src/assets/images/angular-react-integration-diagram.svg)
+
+This diagram illustrates:
+- The separation between Angular and React frameworks
+- The ReactWrapperService that renders React components in Angular templates
+- The AngularServicesContext that provides Angular services to React components
+- The bidirectional data flow between Angular and React
+- The test layer that ensures functional equivalence during migration
+
+The detailed diagrams below provide more specific implementation details of the incremental integration approach (PR #2), focusing on how Angular and React components communicate and integrate.
 
 #### 1. Overview Architecture
 
