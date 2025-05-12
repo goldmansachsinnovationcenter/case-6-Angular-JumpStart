@@ -1,12 +1,12 @@
 <div class="container">
-    <div class="row card-container">
+    <div class="row card-container" data-testid="customers-card">
         <div class="col-sm-6 col-md-4 col-lg-3" *ngFor="let customer of customers;trackBy:trackbyService.customer">
-            <div class="card">
+            <div class="card" data-testid="customer-card">
                 <div class="card-header">
-                    <a [routerLink]="['/customers',customer.id,'details']" class="white">
+                    <a [routerLink]="['/customers',customer.id,'details']" class="white" data-testid="customer-name">
                         {{customer.firstName | capitalize }} {{ customer.lastName | capitalize }} 
                     </a>
-                    <a [routerLink]="['/customers',customer.id,'edit']">
+                    <a [routerLink]="['/customers',customer.id,'edit']" data-testid="customer-edit">
                         <i title="Edit"  
                            class="pull-right glyphicon glyphicon-edit edit-icon white"></i>
                     </a>
@@ -19,8 +19,8 @@
                             </a>
                         </div>
                         <div class="pull-left card-body-right">
-                            <div class="card-body-content">{{customer.city | trim }}, {{customer.state.name}}</div>
-                            <a [routerLink]="['/customers',customer.id,'orders']">View Orders</a>
+                            <div class="card-body-content" data-testid="customer-location">{{customer.city | trim }}, {{customer.state.name}}</div>
+                            <a [routerLink]="['/customers',customer.id,'orders']" data-testid="customer-orders">View Orders</a>
                         </div>
                     </div>
                 </div>

@@ -4,15 +4,15 @@
             <h3><span class="glyphicon glyphicon-lock"></span> Login</h3>
         </header>
         <br />
-        <form [formGroup]="loginForm" (ngSubmit)="submit(loginForm)" class="login-form" novalidate>
+        <form [formGroup]="loginForm" (ngSubmit)="submit(loginForm)" class="login-form" novalidate data-testid="login-form">
             <div class="login">
                 <div class="row">
                     <div class="col-md-2">
                         Email:
                     </div>
                     <div class="col-md-10">
-                        <input title="email" type="email" name="email" class="form-control" formControlName="email" />
-                        <div class="alert alert-danger" data-cy="email-error" [hidden]="f['email'].untouched || f['email'].valid">
+                        <input title="email" type="email" name="email" class="form-control" formControlName="email" data-testid="login-email" />
+                        <div class="alert alert-danger" data-cy="email-error" data-testid="login-email-error" [hidden]="f['email'].untouched || f['email'].valid">
                             A valid email address is required
                         </div>
                     </div>
@@ -23,8 +23,8 @@
                         Password:
                     </div>
                     <div class="col-md-10">
-                        <input title="password" type="password" name="password" class="form-control" formControlName="password" />
-                        <div class="alert alert-danger" data-cy="password-error" [hidden]="f['password'].untouched || f['password'].valid">
+                        <input title="password" type="password" name="password" class="form-control" formControlName="password" data-testid="login-password" />
+                        <div class="alert alert-danger" data-cy="password-error" data-testid="login-password-error" [hidden]="f['password'].untouched || f['password'].valid">
                             Password is required (6 or more characters with at least one number)
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-success" [disabled]="!loginForm.valid">Login</button>
+                        <button type="submit" class="btn btn-success" [disabled]="!loginForm.valid" data-testid="login-submit">Login</button>
                     </div>
                 </div>
                 <br />
