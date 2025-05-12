@@ -282,6 +282,556 @@ The analysis of PRs reveals that Devin performs significantly better with increm
 | **State Management** | Services + RxJS | Hooks + Context | Angular services via hooks |
 | **Component Model** | Class-based | Function-based | Function components using Angular services |
 
+### Technical Implementation Diagrams
+
+The following diagrams illustrate the technical implementation details of the incremental integration approach (PR #2), focusing on how Angular and React components communicate and integrate.
+
+#### 1. Overview Architecture
+
+```
+┌─────────────────────────────────────┐
+│       Angular Application           │
+│                                     │
+│  ┌─────────────┐    ┌─────────────┐ │
+│  │  Angular    │    │  Angular    │ │
+│  │ Components  │    │  Services   │ │
+│  └──────┬──────┘    └──────┬──────┘ │
+│         │                  │        │
+│         ▼                  ▼        │
+│  ┌─────────────────────────────────┐│
+│  │     ReactWrapperService         ││
+│  └──────────────┬──────────────────┘│
+│                 │                   │
+└─────────────────┼───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│       React Components              │
+│                                     │
+│  ┌─────────────┐    ┌─────────────┐ │
+│  │AngularServices│  │   React     │ │
+│  │  Provider    │──▶│ Components  │ │
+│  └─────────────┘    └─────────────┘ │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+The integration architecture enables incremental migration from Angular to React by creating two key bridge components:
+
+1. **ReactWrapperService**: An Angular service that renders React components within Angular templates
+2. **AngularServicesProvider**: A React context provider that makes Angular services available to React components
+
+This approach allows for component-by-component migration while maintaining full functionality and bidirectional communication between frameworks.
+
+#### 2. ReactWrapperService Component Rendering Flow
+
+```
+┌─────────────────────────────────────┐
+│      Angular Component Lifecycle    │
+│                                     │
+│  ┌─────────────┐                    │
+│  │  ngOnInit() │                    │
+│  └──────┬──────┘                    │
+│         │                           │
+│         ▼                           │
+│  ┌─────────────────────────────┐    │
+│  │ renderReactComponent()      │    │
+│  │ 1. Dynamic import React     │    │
+│  │ 2. Dynamic import Context   │    │
+│  │ 3. Create React element tree│    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ reactWrapper.renderReact()  │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+└─────────────────┼───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│      ReactWrapperService            │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ renderReact(elementRef,     │    │
+│  │            reactElement)    │    │
+│  │ 1. Unmount existing React   │    │
+│  │ 2. Get container element    │    │
+│  │ 3. Create React root        │    │
+│  │ 4. Store root in Map        │    │
+│  │ 5. Render React element     │    │
+│  │ 6. Execute callback         │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+└─────────────────┼───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│      React Component Tree           │
+│                                     │
+│  ┌─────────────┐    ┌─────────────┐ │
+│  │AngularServices│  │   React     │ │
+│  │  Provider    │──▶│ Component   │ │
+│  └─────────────┘    └─────────────┘ │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+The ReactWrapperService is an Angular service that renders React components within Angular templates:
+
+```typescript
+@Injectable({
+  providedIn: 'root'
+})
+export class ReactWrapperService implements OnDestroy {
+  private roots = new Map<ElementRef, Root>();
+
+  renderReact(elementRef: ElementRef, reactElement: React.ReactElement, callback?: () => void): void {
+    this.unmountReact(elementRef);
+    const container = elementRef.nativeElement;
+    const root = createRoot(container);
+    this.roots.set(elementRef, root);
+    root.render(reactElement);
+    if (callback) {
+      callback();
+    }
+  }
+
+  unmountReact(elementRef: ElementRef): void {
+    const root = this.roots.get(elementRef);
+    if (root) {
+      root.unmount();
+      this.roots.delete(elementRef);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.roots.forEach(root => {
+      root.unmount();
+    });
+    this.roots.clear();
+  }
+}
+```
+
+This service:
+- Creates React roots in Angular component templates
+- Renders React components in these roots
+- Tracks roots in a Map for proper cleanup
+- Provides unmount functionality for component cleanup
+
+#### 3. AngularServicesContext Provider Pattern
+
+```
+┌─────────────────────────────────────┐
+│      Angular Component              │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ const services = {          │    │
+│  │   authService,              │    │
+│  │   growlerService,           │    │
+│  │   router,                   │    │
+│  │   loggerService             │    │
+│  │ }                           │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ React.createElement(        │    │
+│  │   AngularServicesProvider,  │    │
+│  │   { services },             │    │
+│  │   React.createElement(      │    │
+│  │     ReactComponent,         │    │
+│  │     props                   │    │
+│  │   )                         │    │
+│  │ )                           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────┬───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│  AngularServicesContext Implementation│
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ // Context Creation         │    │
+│  │ const AngularServicesContext│    │
+│  │ = createContext<            │    │
+│  │   AngularServicesContextType│    │
+│  │   | undefined               │    │
+│  │ >(undefined)                │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ // Provider Component       │    │
+│  │ export const                │    │
+│  │ AngularServicesProvider =   │    │
+│  │ ({ services, children }) => {│    │
+│  │   return (                  │    │
+│  │     <Context.Provider       │    │
+│  │       value={services}>     │    │
+│  │       {children}            │    │
+│  │     </Context.Provider>     │    │
+│  │   )                         │    │
+│  │ }                           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ // Consumer Hook            │    │
+│  │ export const                │    │
+│  │ useAngularServices = () => {│    │
+│  │   const context =           │    │
+│  │     useContext(             │    │
+│  │       AngularServicesContext│    │
+│  │     )                       │    │
+│  │   if (context === undefined)│    │
+│  │     throw new Error(...)    │    │
+│  │   return context            │    │
+│  │ }                           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────┬───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│      React Component                │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ export const Component = () => { │
+│  │   // Access Angular services     │
+│  │   const {                   │    │
+│  │     authService,            │    │
+│  │     growlerService,         │    │
+│  │     router,                 │    │
+│  │     loggerService           │    │
+│  │   } = useAngularServices()  │    │
+│  │                             │    │
+│  │   // Use services in component   │
+│  │   // logic and JSX              │
+│  │ }                           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+The AngularServicesContext is a React context provider that makes Angular services available to React components:
+
+```typescript
+interface AngularServicesContextType {
+  authService?: AuthService;
+  growlerService?: GrowlerService;
+  loggerService?: LoggerService;
+  router?: Router;
+  modalService?: ModalService;
+  eventBus?: EventBusService;
+}
+
+const AngularServicesContext = createContext<AngularServicesContextType | undefined>(undefined);
+
+export const AngularServicesProvider: React.FC<{
+  services: AngularServicesContextType;
+  children: ReactNode;
+}> = ({ services, children }) => {
+  return (
+    <AngularServicesContext.Provider value={services}>
+      {children}
+    </AngularServicesContext.Provider>
+  );
+};
+
+export const useAngularServices = (): AngularServicesContextType => {
+  const context = useContext(AngularServicesContext);
+  if (context === undefined) {
+    throw new Error('useAngularServices must be used within an AngularServicesProvider');
+  }
+  return context;
+};
+```
+
+This pattern:
+- Creates a React context for Angular services
+- Provides a provider component that wraps React components
+- Offers a hook for React components to access Angular services
+- Enables React components to use Angular services seamlessly
+
+#### 4. Bidirectional Data Flow
+
+```
+┌─────────────────────────────────────┐
+│      Angular NavbarComponent        │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ // Angular services         │    │
+│  │ constructor(                │    │
+│  │   private router: Router,   │    │
+│  │   private authService,      │    │
+│  │   private growler,          │    │
+│  │   private logger,           │    │
+│  │   private reactWrapper      │    │
+│  │ ) { }                       │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ // Callback function        │    │
+│  │ private handleLoginLogout = │    │
+│  │   () => { ... }             │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ // Pass to React            │    │
+│  │ const services = {          │    │
+│  │   authService,              │    │
+│  │   growlerService,           │    │
+│  │   router,                   │    │
+│  │   loggerService             │    │
+│  │ }                           │    │
+│  │                             │    │
+│  │ React.createElement(        │    │
+│  │   AngularServicesProvider,  │    │
+│  │   { services },             │    │
+│  │   React.createElement(      │    │
+│  │     ReactNavbarComponent,   │    │
+│  │     { onLoginLogout }       │    │
+│  │   )                         │    │
+│  │ )                           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────┬───────────────────┘
+                  │
+                  │ Angular → React
+                  │ (Downward Flow)
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│      React NavbarComponent          │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ // Access Angular services  │    │
+│  │ const {                     │    │
+│  │   authService,              │    │
+│  │   growlerService,           │    │
+│  │   router,                   │    │
+│  │   loggerService             │    │
+│  │ } = useAngularServices()    │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ // Subscribe to Angular     │    │
+│  │ // service events           │    │
+│  │ useEffect(() => {           │    │
+│  │   if (authService) {        │    │
+│  │     // Init state from service   │
+│  │     setIsAuthenticated(     │    │
+│  │       authService.isAuthenticated│
+│  │     )                       │    │
+│  │                             │    │
+│  │     // Subscribe to changes │    │
+│  │     const subscription =    │    │
+│  │       authService.authChanged│    │
+│  │         .subscribe({        │    │
+│  │           next: (loggedIn) => {  │
+│  │             // Update state │    │
+│  │           }                 │    │
+│  │         })                  │    │
+│  │   }                         │    │
+│  │ }, [authService])           │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ // Call Angular services    │    │
+│  │ const loginOrOut = () => {  │    │
+│  │   if (isAuthenticated) {    │    │
+│  │     authService.logout()    │    │
+│  │       .subscribe({          │    │
+│  │         next: () => {       │    │
+│  │           // Update state   │    │
+│  │           growlerService.growl() │
+│  │           router.navigate() │    │
+│  │           onLoginLogout()   │    │
+│  │         }                   │    │
+│  │       })                    │    │
+│  │   } else {                  │    │
+│  │     router.navigate()       │    │
+│  │     onLoginLogout()         │    │
+│  │   }                         │    │
+│  │ }                           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────┬───────────────────┘
+                  │
+                  │ React → Angular
+                  │ (Upward Flow)
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│      Data Flow Directions           │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ Angular → React (Down)      │    │
+│  │ • Angular services          │    │
+│  │ • Props and callbacks       │    │
+│  │ • State updates             │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ React → Angular (Up)        │    │
+│  │ • Service method calls      │    │
+│  │ • Callback invocations      │    │
+│  │ • Event subscriptions       │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+The bidirectional data flow enables seamless communication between Angular and React components:
+
+**Angular to React (Downward Flow)**:
+- Angular services are passed to React components via AngularServicesProvider
+- Props and callbacks are passed from Angular to React components
+- React components observe state changes in Angular services
+
+**React to Angular (Upward Flow)**:
+- React components call methods on Angular services
+- React components invoke callback functions provided by Angular
+- React components subscribe to events emitted by Angular services
+
+This bidirectional communication allows React components to maintain the same functionality as their Angular counterparts while using React's component model.
+
+#### 5. Component Lifecycle Management
+
+```
+┌─────────────────────────────────────┐
+│    Angular Component Lifecycle      │
+│                                     │
+│  ┌─────────────┐    ┌─────────────┐ │
+│  │ Constructor │───►│  ngOnInit() │ │
+│  └─────────────┘    └──────┬──────┘ │
+│                            │        │
+│                            ▼        │
+│  ┌─────────────────────────────┐    │
+│  │ renderReactComponent()      │    │
+│  │ 1. Dynamic import React     │    │
+│  │ 2. Create React element     │    │
+│  │ 3. Call renderReact()       │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 │                   │
+│  ┌─────────────┐    ┌─────────────┐ │
+│  │ngOnDestroy()│◄───┤Component    │ │
+│  └──────┬──────┘    │Destruction  │ │
+│         │           └─────────────┘ │
+│         │                           │
+│         ▼                           │
+│  ┌─────────────────────────────┐    │
+│  │ unmountReact(containerRef)  │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────┬───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│    ReactWrapperService              │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ private roots =             │    │
+│  │   new Map<ElementRef, Root>()│    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ renderReact(elementRef,     │    │
+│  │            reactElement)    │    │
+│  │ 1. Unmount existing React   │    │
+│  │ 2. Get container element    │    │
+│  │ 3. Create React root        │    │
+│  │ 4. Store root in Map        │    │
+│  │ 5. Render React element     │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 │                   │
+│  ┌─────────────────────────────┐    │
+│  │ unmountReact(elementRef)    │    │
+│  │ 1. Get root from Map        │    │
+│  │ 2. Unmount root if it exists│    │
+│  │ 3. Remove from Map          │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 │                   │
+│  ┌─────────────────────────────┐    │
+│  │ ngOnDestroy()               │    │
+│  │ 1. Unmount all roots        │    │
+│  │ 2. Clear roots Map          │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────┬───────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────┐
+│    React Component Lifecycle        │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ React.createElement()       │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ root.render(reactElement)   │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ React Component Mounted     │    │
+│  │ 1. Constructor              │    │
+│  │ 2. render()                 │    │
+│  │ 3. useEffect() hooks        │    │
+│  └──────────────┬──────────────┘    │
+│                 │                   │
+│                 ▼                   │
+│  ┌─────────────────────────────┐    │
+│  │ root.unmount()              │    │
+│  │ 1. Component will unmount   │    │
+│  │ 2. useEffect() cleanups     │    │
+│  │ 3. Component unmounted      │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+Proper lifecycle management is crucial for preventing memory leaks and ensuring clean component unmounting:
+
+**Angular Component Lifecycle**:
+- In `ngOnInit()`, the component renders the React component
+- In `ngOnDestroy()`, the component unmounts the React component
+
+**ReactWrapperService Management**:
+- Tracks all React roots in a Map
+- Provides methods for rendering and unmounting React components
+- Cleans up all roots when the service is destroyed
+
+**React Component Lifecycle**:
+- React components are mounted when rendered by ReactWrapperService
+- React components subscribe to Angular services in useEffect hooks
+- React components unsubscribe from Angular services in useEffect cleanup functions
+- React components are unmounted when Angular components are destroyed
+
+This lifecycle management ensures that:
+- React components are properly initialized with Angular services
+- React components are properly cleaned up when Angular components are destroyed
+- No memory leaks occur due to lingering React roots or subscriptions
+- Angular and React component lifecycles are synchronized
+
+### Implementation Benefits
+
+1. **Incremental Migration**: Convert components one by one without disrupting the application
+2. **Bidirectional Communication**: Maintain full functionality during migration
+3. **Consistent User Experience**: Users don't notice the framework change
+4. **Reduced Risk**: Test each converted component individually
+5. **Maintainable Code**: Clean separation between Angular and React code
+6. **Reusable Pattern**: Apply the same pattern to convert any Angular component to React
+
 ## Strategic Recommendations for Angular to React Conversion
 
 ### Recommended Approach
