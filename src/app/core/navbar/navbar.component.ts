@@ -1,62 +1,60 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-
-import { Subscription } from 'rxjs';
-
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ReactWrapperService } from '../../shared/react/react-wrapper.service';
 import { AuthService } from '../services/auth.service';
 import { GrowlerService, GrowlerMessageType } from '../growler/growler.service';
 import { LoggerService } from '../services/logger.service';
+import { CommonModule } from '@angular/common';
+import * as React from 'react';
 
 @Component({
     selector: 'cm-navbar',
-    templateUrl: './navbar.component.html',
+    template: '<div #reactNavbarContainer></div>',
     standalone: true,
-    imports: [RouterLink, RouterLinkActive]
+    imports: [CommonModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+    @ViewChild('reactNavbarContainer', { static: true }) containerRef!: ElementRef;
 
-    isCollapsed: boolean = false;
-    loginLogoutText = 'Login';
-    sub: Subscription = {} as Subscription;
-
-    constructor(private router: Router,
-        private authservice: AuthService,
+    constructor(
+        private router: Router,
+        private authService: AuthService,
         private growler: GrowlerService,
-        private logger: LoggerService) { }
+        private logger: LoggerService,
+        private reactWrapper: ReactWrapperService
+    ) { }
 
     ngOnInit() {
-        this.sub = this.authservice.authChanged
-            .subscribe((loggedIn: boolean) => {
-                this.setLoginLogoutText();
-            },
-            (err: any) => this.logger.log(err));
+        this.renderReactComponent();
     }
 
     ngOnDestroy() {
-        this.sub.unsubscribe();
+        this.reactWrapper.unmountReact(this.containerRef);
     }
 
-    loginOrOut() {
-        const isAuthenticated = this.authservice.isAuthenticated;
-        if (isAuthenticated) {
-            this.authservice.logout()
-                .subscribe((status: boolean) => {
-                    this.setLoginLogoutText();
-                    this.growler.growl('Logged Out', GrowlerMessageType.Info);
-                    this.router.navigate(['/customers']);
-                    return;
-                },
-                (err: any) => this.logger.log(err));
-        }
-        this.redirectToLogin();
+    private handleLoginLogout = () => {
     }
 
-    redirectToLogin() {
-        this.router.navigate(['/login']);
-    }
+    private renderReactComponent(): void {
+        import('./navbar-component').then(({ NavbarComponent: ReactNavbarComponent }) => {
+            import('../../shared/react/angular-services-context').then(({ AngularServicesProvider }) => {
+                const services = {
+                    authService: this.authService,
+                    growlerService: this.growler,
+                    loggerService: this.logger,
+                    router: this.router
+                };
 
-    setLoginLogoutText() {
-        this.loginLogoutText = (this.authservice.isAuthenticated) ? 'Logout' : 'Login';
-    }
+                const reactElement = React.createElement(
+                    AngularServicesProvider as any, 
+                    { services } as any,
+                    React.createElement(ReactNavbarComponent as any, {
+                        onLoginLogout: this.handleLoginLogout
+                    })
+                );
 
+                this.reactWrapper.renderReact(this.containerRef, reactElement as any);
+            });
+        });
+    }
 }
