@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#000" />
+    </marker>
+  </defs>
+  
+  <!-- Background Rectangles -->
+  <rect x="50" y="50" width="700" height="500" rx="10" ry="10" fill="#f8f9fa" stroke="#ddd" stroke-width="2" />
+  <rect x="70" y="80" width="320" height="440" rx="10" ry="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />
+  <rect x="410" y="80" width="320" height="440" rx="10" ry="10" fill="#e8f5e9" stroke="#a5d6a7" stroke-width="2" />
+  
+  <!-- Framework Labels -->
+  <text x="230" y="110" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#1565c0">Angular Framework</text>
+  <text x="570" y="110" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#2e7d32">React Framework</text>
+  
+  <!-- Angular Components -->
+  <rect x="100" y="140" width="260" height="80" rx="5" ry="5" fill="#bbdefb" stroke="#1565c0" stroke-width="2" />
+  <text x="230" y="170" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">Angular Component</text>
+  <text x="230" y="195" font-family="Arial" font-size="14" text-anchor="middle">Template with React Container</text>
+  
+  <rect x="100" y="250" width="260" height="80" rx="5" ry="5" fill="#bbdefb" stroke="#1565c0" stroke-width="2" />
+  <text x="230" y="280" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">ReactWrapperService</text>
+  <text x="230" y="305" font-family="Arial" font-size="14" text-anchor="middle">Manages React Component Lifecycle</text>
+  
+  <rect x="100" y="360" width="120" height="80" rx="5" ry="5" fill="#bbdefb" stroke="#1565c0" stroke-width="2" />
+  <text x="160" y="390" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">Angular</text>
+  <text x="160" y="415" font-family="Arial" font-size="14" text-anchor="middle">Services</text>
+  
+  <rect x="240" y="360" width="120" height="80" rx="5" ry="5" fill="#bbdefb" stroke="#1565c0" stroke-width="2" />
+  <text x="300" y="390" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">Angular</text>
+  <text x="300" y="415" font-family="Arial" font-size="14" text-anchor="middle">State</text>
+  
+  <!-- React Components -->
+  <rect x="440" y="140" width="260" height="80" rx="5" ry="5" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2" />
+  <text x="570" y="170" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">React Component</text>
+  <text x="570" y="195" font-family="Arial" font-size="14" text-anchor="middle">with data-testid Attributes</text>
+  
+  <rect x="440" y="250" width="260" height="80" rx="5" ry="5" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2" />
+  <text x="570" y="280" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">AngularServicesContext</text>
+  <text x="570" y="305" font-family="Arial" font-size="14" text-anchor="middle">Provider & useAngularServices() Hook</text>
+  
+  <rect x="440" y="360" width="260" height="80" rx="5" ry="5" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2" />
+  <text x="570" y="390" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">React State & Props</text>
+  <text x="570" y="415" font-family="Arial" font-size="14" text-anchor="middle">Component-specific State</text>
+  
+  <!-- Testing Layer -->
+  <rect x="100" y="470" width="600" height="50" rx="5" ry="5" fill="#fff9c4" stroke="#fbc02d" stroke-width="2" />
+  <text x="400" y="500" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#bf360c">Playwright E2E & Visual Regression Tests</text>
+  
+  <!-- Arrows for Data Flow -->
+  <!-- Angular to React -->
+  <line x1="360" y1="180" x2="430" y2="180" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+  <text x="395" y="170" font-family="Arial" font-size="12" text-anchor="middle">Props</text>
+  
+  <!-- React to Angular -->
+  <line x1="430" y1="200" x2="360" y2="200" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+  <text x="395" y="220" font-family="Arial" font-size="12" text-anchor="middle">Events/Callbacks</text>
+  
+  <!-- ReactWrapperService to React Component -->
+  <line x1="230" y1="330" x2="230" y2="350" stroke="#000" stroke-width="2" />
+  <line x1="230" y1="350" x2="440" y2="350" stroke="#000" stroke-width="2" />
+  <line x1="440" y1="350" x2="440" y2="180" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+  <text x="335" y="340" font-family="Arial" font-size="12" text-anchor="middle">createRoot()</text>
+  
+  <!-- Angular Services to AngularServicesContext -->
+  <line x1="160" y1="440" x2="160" y2="460" stroke="#000" stroke-width="2" />
+  <line x1="160" y1="460" x2="570" y2="460" stroke="#000" stroke-width="2" />
+  <line x1="570" y1="460" x2="570" y2="330" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+  <text x="365" y="450" font-family="Arial" font-size="12" text-anchor="middle">Service Injection</text>
+  
+  <!-- AngularServicesContext to React Component -->
+  <line x1="570" y1="250" x2="570" y2="220" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+  <text x="620" y="235" font-family="Arial" font-size="12" text-anchor="middle">useAngularServices()</text>
+  
+  <!-- Title -->
+  <text x="400" y="30" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle">Angular-React Integration Architecture</text>
+  <text x="400" y="570" font-family="Arial" font-size="16" font-style="italic" text-anchor="middle">Incremental Migration with Test-First Strategy</text>
+</svg>
