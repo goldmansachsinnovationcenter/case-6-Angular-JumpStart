@@ -12,22 +12,43 @@
                 <div class="navbar">
                     <ul class="nav navbar-nav">
                         <li class="toolbar-item">
-                            <a (click)="changeDisplayMode(displayModeEnum.Card)" [class.active]="displayMode === displayModeEnum.Card">
+                            <a (click)="changeDisplayMode(displayModeEnum.Card)" 
+                               [class.active]="displayMode === displayModeEnum.Card"
+                               (keydown.enter)="changeDisplayMode(displayModeEnum.Card)"
+                               (keydown.space)="changeDisplayMode(displayModeEnum.Card)"
+                               role="button"
+                               tabindex="0"
+                               aria-label="Switch to card view display">
                                 <span class="glyphicon glyphicon-th-large"></span> Card View
                             </a>
                         </li>
                         <li class="toolbar-item">
-                            <a (click)="changeDisplayMode(displayModeEnum.Grid)" [class.active]="displayMode === displayModeEnum.Grid">
+                            <a (click)="changeDisplayMode(displayModeEnum.Grid)" 
+                               [class.active]="displayMode === displayModeEnum.Grid"
+                               (keydown.enter)="changeDisplayMode(displayModeEnum.Grid)"
+                               (keydown.space)="changeDisplayMode(displayModeEnum.Grid)"
+                               role="button"
+                               tabindex="0"
+                               aria-label="Switch to grid view display">
                                 <span class="glyphicon glyphicon-align-justify"></span> List View
                             </a>
                         </li>
                         <li class="toolbar-item">
-                            <a (click)="lazyLoadMapComponent()" [class.active]="displayMode === displayModeEnum.Map">
+                            <a (click)="lazyLoadMapComponent()" 
+                               [class.active]="displayMode === displayModeEnum.Map"
+                               (keydown.enter)="lazyLoadMapComponent()"
+                               (keydown.space)="lazyLoadMapComponent()"
+                               role="button"
+                               tabindex="0"
+                               aria-label="Switch to map view display">
                                 <span class="glyphicon glyphicon-map-marker"></span> Map View
                             </a>
                         </li>
                         <li class="toolbar-item">
-                            <a routerLink="/customers/0/edit">
+                            <a routerLink="/customers/0/edit"
+                               role="button"
+                               tabindex="0"
+                               aria-label="Create new customer">
                                 <span class="glyphicon glyphicon-plus"></span> New Customer
                             </a>
                         </li>

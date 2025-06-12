@@ -1,0 +1,69 @@
+/* Focus management styles for keyboard navigation */
+.keyboard-navigation *:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.keyboard-focused {
+  outline: 2px solid #007bff !important;
+  outline-offset: 2px !important;
+}
+
+/* Hide focus outline during mouse interaction */
+body:not(.keyboard-navigation) *:focus {
+  outline: none;
+}
+
+/* Enhanced button accessibility */
+button:focus,
+a[role="button"]:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .keyboard-navigation *:focus,
+  .keyboard-focused {
+    outline: 3px solid #000;
+    outline-offset: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
