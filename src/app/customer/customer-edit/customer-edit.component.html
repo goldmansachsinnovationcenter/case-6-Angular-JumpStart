@@ -31,14 +31,26 @@
     </div>
     <div *ngIf="customer">
       <div class="alert alert-warning" *ngIf="customer.id && deleteMessageEnabled">
-         Delete Customer?&nbsp;&nbsp;<button class="btn btn-danger" (click)="delete($event)">Yes</button>&nbsp;&nbsp;
-         <button class="btn btn-default" (click)="deleteMessageEnabled = false">No</button>
+         Delete Customer?&nbsp;&nbsp;<button class="btn btn-danger" (click)="delete($event)" 
+           [attr.aria-label]="'Confirm delete customer ' + customer.firstName + ' ' + customer.lastName"
+           tabindex="0">Yes</button>&nbsp;&nbsp;
+         <button class="btn btn-default" (click)="deleteMessageEnabled = false"
+           aria-label="Cancel delete operation"
+           tabindex="0">No</button>
       </div>
-      <button class="btn btn-danger" *ngIf="customer.id && !deleteMessageEnabled" (click)="deleteMessageEnabled = true">Delete</button>&nbsp;&nbsp;
+      <button class="btn btn-danger" *ngIf="customer.id && !deleteMessageEnabled" 
+        (click)="deleteMessageEnabled = true"
+        [attr.aria-label]="'Delete customer ' + customer.firstName + ' ' + customer.lastName"
+        tabindex="0">Delete</button>&nbsp;&nbsp;
 
       <div class="pull-right" *ngIf="!deleteMessageEnabled">
-        <button class="btn btn-default" (click)="cancel($event)">Cancel</button>&nbsp;&nbsp;
-        <button type="submit" class="btn btn-success" [disabled]="customerForm.pristine || !customerForm.valid">{{ operationText }}</button>
+        <button class="btn btn-default" (click)="cancel($event)"
+          aria-label="Cancel editing and return to customer list"
+          tabindex="0">Cancel</button>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-success" 
+          [disabled]="customerForm.pristine || !customerForm.valid"
+          [attr.aria-label]="operationText + ' customer form'"
+          tabindex="0">{{ operationText }}</button>
       </div>
     </div>
     <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>

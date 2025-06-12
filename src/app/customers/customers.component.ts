@@ -59,6 +59,13 @@ export class CustomersComponent implements OnInit {
       this.displayMode = mode;
   }
 
+  handleKeyboardNavigation(event: KeyboardEvent, mode: DisplayModeEnum) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.changeDisplayMode(mode);
+    }
+  }
+
   pageChanged(page: number) {
     this.getCustomersPage(page);
   }
